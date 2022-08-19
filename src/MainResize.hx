@@ -10,27 +10,26 @@ using StringTools;
 
 /**
  * @author Matthijs Kamstra aka [mck]
- * MIT
- *
  */
 class MainResize {
 	var container:js.html.DivElement;
+	var arr = ['blue', 'red', 'green'];
 
 	public function new() {
 		trace("Hello 'Kluez-resizer'");
-		init();
-	}
 
-	function init() {
 		document.addEventListener("DOMContentLoaded", function(event) {
 			console.log('${App.NAME} Dom ready :: build: ${App.getBuildDate()} ');
-			initHTML();
+
+			container = cast document.getElementById('kluez-resizer-container');
+
+			createItem();
 			makeResizableDiv('.resizable');
 		});
 	}
 
 	function makeResizableDiv(div) {
-		var element = document.querySelector(div);
+		var element:DivElement = cast document.querySelector(div);
 		var resizers = document.querySelectorAll(div + ' .resizer');
 		var minimum_size = 20;
 		var original_width = 0.;
@@ -40,84 +39,91 @@ class MainResize {
 		var original_mouse_x = 0.;
 		var original_mouse_y = 0.;
 
-		for (i in 0...resizers.length) {
-			var _resizers = resizers[i];
-			// trace(_resizers);
+		element.onmousedown = () -> {
+			trace('onmousedown');
+			element.onmouseup = () -> {
+				trace('onmouseup');
+			}
+		}
 
+		for (i in 0...resizers.length) {
+			// var _resizers = resizers[i];
 			var currentResizer:DivElement = cast resizers[i];
 
 			function resize(e) {
-				// trace(cast(currentResizer));
-				if (currentResizer.classList.contains('bottom-right')) {
-					var width = original_width + (e.pageX - original_mouse_x);
-					var height = original_height + (e.pageY - original_mouse_y);
-					if (width > minimum_size) {
-						element.style.width = width + 'px';
-					}
-					if (height > minimum_size) {
-						element.style.height = height + 'px';
-					}
-				} else if (currentResizer.classList.contains('bottom-left')) {
-					var height = original_height + (e.pageY - original_mouse_y);
-					var width = original_width - (e.pageX - original_mouse_x);
-					if (height > minimum_size) {
-						element.style.height = height + 'px';
-					}
-					if (width > minimum_size) {
-						element.style.width = width + 'px';
-						element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
-					}
-				} else if (currentResizer.classList.contains('top-right')) {
-					var width = original_width + (e.pageX - original_mouse_x);
-					var height = original_height - (e.pageY - original_mouse_y);
-					if (width > minimum_size) {
-						element.style.width = width + 'px';
-					}
-					if (height > minimum_size) {
-						element.style.height = height + 'px';
-						element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
-					}
-				} else if (currentResizer.classList.contains('top-left')) {
-					var width = original_width - (e.pageX - original_mouse_x);
-					var height = original_height - (e.pageY - original_mouse_y);
-					if (width > minimum_size) {
-						element.style.width = width + 'px';
-						element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
-					}
-					if (height > minimum_size) {
-						element.style.height = height + 'px';
-						element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
-					}
-				} else if (currentResizer.classList.contains('bottom')) {
-					var width = original_width + (e.pageX - original_mouse_x);
-					var height = original_height + (e.pageY - original_mouse_y);
+				var value = currentResizer.dataset.kluezResizer;
+				switch (value) {
+					case 'bottom-right':
+						var width = original_width + (e.pageX - original_mouse_x);
+						var height = original_height + (e.pageY - original_mouse_y);
+						if (width > minimum_size) {
+							element.style.width = width + 'px';
+						}
+						if (height > minimum_size) {
+							element.style.height = height + 'px';
+						}
+					case 'bottom-left':
+						var height = original_height + (e.pageY - original_mouse_y);
+						var width = original_width - (e.pageX - original_mouse_x);
+						if (height > minimum_size) {
+							element.style.height = height + 'px';
+						}
+						if (width > minimum_size) {
+							element.style.width = width + 'px';
+							element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+						}
+					case 'top-right':
+						var width = original_width + (e.pageX - original_mouse_x);
+						var height = original_height - (e.pageY - original_mouse_y);
+						if (width > minimum_size) {
+							element.style.width = width + 'px';
+						}
+						if (height > minimum_size) {
+							element.style.height = height + 'px';
+							element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+						}
+					case 'top-left':
+						var width = original_width - (e.pageX - original_mouse_x);
+						var height = original_height - (e.pageY - original_mouse_y);
+						if (width > minimum_size) {
+							element.style.width = width + 'px';
+							element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+						}
+						if (height > minimum_size) {
+							element.style.height = height + 'px';
+							element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+						}
+					case 'bottom':
+						var width = original_width + (e.pageX - original_mouse_x);
+						var height = original_height + (e.pageY - original_mouse_y);
 
-					if (height > minimum_size) {
-						element.style.height = height + 'px';
-					}
-				} else if (currentResizer.classList.contains('top')) {
-					var width = original_width - (e.pageX - original_mouse_x);
-					var height = original_height - (e.pageY - original_mouse_y);
+						if (height > minimum_size) {
+							element.style.height = height + 'px';
+						}
+					case 'top':
+						var width = original_width - (e.pageX - original_mouse_x);
+						var height = original_height - (e.pageY - original_mouse_y);
 
-					if (height > minimum_size) {
-						element.style.height = height + 'px';
-						element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
-					}
-				} else if (currentResizer.classList.contains('right')) {
-					var width = original_width + (e.pageX - original_mouse_x);
-					var height = original_height - (e.pageY - original_mouse_y);
-					if (width > minimum_size) {
-						element.style.width = width + 'px';
-					}
-				} else if (currentResizer.classList.contains('left')) {
-					var width = original_width - (e.pageX - original_mouse_x);
-					var height = original_height - (e.pageY - original_mouse_y);
-					if (width > minimum_size) {
-						element.style.width = width + 'px';
-						element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
-					}
-				} else {
-					trace(currentResizer.classList);
+						if (height > minimum_size) {
+							element.style.height = height + 'px';
+							element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+						}
+					case 'right':
+						var width = original_width + (e.pageX - original_mouse_x);
+						var height = original_height - (e.pageY - original_mouse_y);
+						if (width > minimum_size) {
+							element.style.width = width + 'px';
+						}
+					case 'left':
+						var width = original_width - (e.pageX - original_mouse_x);
+						var height = original_height - (e.pageY - original_mouse_y);
+						if (width > minimum_size) {
+							element.style.width = width + 'px';
+							element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+						}
+
+					default:
+						trace("case '" + currentResizer.dataset.kluezResier + "': trace ('" + currentResizer.dataset.kluezResier + "');");
 				}
 			}
 
@@ -139,28 +145,26 @@ class MainResize {
 		}
 	}
 
-	function initHTML() {
-		container = cast document.getElementById('kluez-resizer-container');
-
-		var resizerTemplate = "
-<div class='resizable'>
-  <div class='resizers'>
- 	<!-- round resizers -->
-    <div class='resizer top-left'></div>
-    <div class='resizer top-right'></div>
-    <div class='resizer bottom-left'></div>
-    <div class='resizer bottom-right'></div>
- 	<!-- square resizers -->
-    <div class='resizer resizer-sq left'></div>
-    <div class='resizer resizer-sq right'></div>
-    <div class='resizer resizer-sq top'></div>
-    <div class='resizer resizer-sq bottom'></div>
-  </div>
+	function createItem(id = 'foo', x = 150, y = 150, w = 150, h = 150) {
+		var resizerTemplate = '
+<div class="resizable" id="${id}" style="width: ${w}px; height: ${h}px; left: ${x}px; top: ${y}px;">
+	<div class="dragger"></div>
+	<div class="resizers">
+		<!-- round resizers -->
+		<div class="resizer top-left" data-kluez-resizer="top-left"></div>
+		<div class="resizer top-right" data-kluez-resizer="top-right"></div>
+		<div class="resizer bottom-left" data-kluez-resizer="bottom-left"></div>
+		<div class="resizer bottom-right" data-kluez-resizer="bottom-right"></div>
+		<!-- square resizers -->
+		<div class="resizer resizer-sq left" data-kluez-resizer="left"></div>
+		<div class="resizer resizer-sq right" data-kluez-resizer="right"></div>
+		<div class="resizer resizer-sq top" data-kluez-resizer="top"></div>
+		<div class="resizer resizer-sq bottom" data-kluez-resizer="bottom"></div>
+	</div>
 </div>
-";
+';
 
 		var frag = document.createRange().createContextualFragment(resizerTemplate);
-
 		container.appendChild(frag);
 	}
 
