@@ -1,0 +1,8 @@
+-lib hxColorToolkit
+--library buddy
+-cp src
+-main MainResize
+-js docs/kluez-resize.js
+-D source-map-content
+-debug
+-dce full

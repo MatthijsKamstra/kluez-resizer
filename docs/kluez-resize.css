@@ -1,0 +1,82 @@
+body,
+html {
+  background: black;
+}
+
+:root {
+  --blue: #1e90ff;
+  --white: #ffffff;
+  --resizerSize: 20px;
+}
+
+.resizable {
+  background: white;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+}
+
+.resizable .resizers {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #4286f4;
+  box-sizing: border-box;
+}
+
+.resizable .resizers .resizer {
+  width: var(--resizerSize);
+  height: var(--resizerSize);
+  border-radius: 50%; /*magic to turn square into circle*/
+  background: white;
+  border: 3px solid #4286f4;
+  position: absolute;
+}
+
+.resizable .resizers .resizer-sq {
+  border-radius: 0;
+}
+
+.resizable .resizers .resizer.top-left {
+  left: calc(var(--resizerSize) * -0.5);
+  top: calc(var(--resizerSize) * -0.5);
+  cursor: nwse-resize; /*resizer cursor*/
+}
+.resizable .resizers .resizer.top-right {
+  right: calc(var(--resizerSize) * -0.5);
+  top: calc(var(--resizerSize) * -0.5);
+  cursor: nesw-resize;
+}
+.resizable .resizers .resizer.bottom-left {
+  left: calc(var(--resizerSize) * -0.5);
+  bottom: calc(var(--resizerSize) * -0.5);
+  cursor: nesw-resize;
+}
+.resizable .resizers .resizer.bottom-right {
+  right: calc(var(--resizerSize) * -0.5);
+  bottom: calc(var(--resizerSize) * -0.5);
+  cursor: nwse-resize;
+}
+
+/* /akdjlflasdjf */
+.resizable .resizers .resizer.right {
+  right: calc(var(--resizerSize) * -0.5);
+  bottom: calc(50% + (var(--resizerSize) * -0.5));
+  cursor: ew-resize;
+}
+.resizable .resizers .resizer.left {
+  left: calc(var(--resizerSize) * -0.5);
+  bottom: calc(50% + (var(--resizerSize) * -0.5));
+  cursor: ew-resize;
+}
+.resizable .resizers .resizer.bottom {
+  right: calc(50% + (var(--resizerSize) * -0.5));
+  bottom: calc(var(--resizerSize) * -0.5);
+  cursor: ns-resize;
+}
+.resizable .resizers .resizer.top {
+  right: calc(50% + (var(--resizerSize) * -0.5));
+  top: calc(var(--resizerSize) * -0.5);
+  cursor: ns-resize;
+}
