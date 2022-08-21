@@ -1,12 +1,17 @@
 (function ($global) { "use strict";
 var MainResize = function() {
+	this.arr = ["blue","red","green"];
 	var _gthis = this;
-	console.log("src/MainResize.hx:19:","Hello 'Kluez-resizer'");
 	window.document.addEventListener("DOMContentLoaded",function(event) {
-		$global.console.log("" + model_constants_App.NAME + " Dom ready :: build: " + "2022-08-19 18:01:59" + " ");
+		$global.console.log("" + model_constants_App.NAME + " Dom ready :: build: " + "2022-08-21 11:21:04" + " ");
 		_gthis.container = window.document.getElementById("kluez-resizer-container");
-		_gthis.createItem();
+		_gthis.createItem("kluez-resize-element");
 		_gthis.makeResizableDiv(".resizable");
+		var _g = 0;
+		var _g1 = _gthis.arr.length;
+		while(_g < _g1) {
+			var i = _g++;
+		}
 	});
 };
 MainResize.main = function() {
@@ -16,6 +21,7 @@ MainResize.prototype = {
 	makeResizableDiv: function(div) {
 		var element = window.document.querySelector(div);
 		var resizers = window.document.querySelectorAll(div + " .resizer");
+		var blocker = window.document.querySelector(".blocker");
 		var minimum_size = 20;
 		var original_width = 0.;
 		var original_height = 0.;
@@ -23,21 +29,33 @@ MainResize.prototype = {
 		var original_y = 0.;
 		var original_mouse_x = 0.;
 		var original_mouse_y = 0.;
-		element.onmousedown = function() {
-			console.log("src/MainResize.hx:43:","onmousedown");
-			return element.onmouseup = function() {
-				console.log("src/MainResize.hx:45:","onmouseup");
+		blocker.onmousedown = function(e) {
+			e.preventDefault();
+			console.log("src/MainResize.hx:52:","blocker onmousedown");
+			console.log("src/MainResize.hx:53:",e);
+			var parent = blocker.parentElement;
+			window.onmousemove = function(e) {
+				console.log("src/MainResize.hx:57:","blocker onmousemove");
+				console.log("src/MainResize.hx:58:",e);
+				parent.style.left = original_x + (e.pageX - original_mouse_x) + "px";
+				return parent.style.top = original_y + (e.pageY - original_mouse_y) + "px";
 			};
+			window.onmouseup = function(e) {
+				console.log("src/MainResize.hx:67:","blocker onmouseup");
+				window.onmousemove = null;
+				return window.onmouseup = null;
+			};
+			return null;
 		};
 		var _g = 0;
 		var _g1 = resizers.length;
 		while(_g < _g1) {
 			var i = _g++;
-			var _resizers = resizers[i];
 			var currentResizer = [resizers[i]];
-			var resize = [(function(currentResizer) {
+			var onMousemoveHandler = [(function(currentResizer) {
 				return function(e) {
 					var value = currentResizer[0].dataset.kluezResizer;
+					console.log("src/MainResize.hx:82:",value);
 					switch(value) {
 					case "bottom":
 						var width = original_width + (e.pageX - original_mouse_x);
@@ -114,16 +132,16 @@ MainResize.prototype = {
 						}
 						break;
 					default:
-						console.log("src/MainResize.hx:128:","case '" + currentResizer[0].dataset.kluezResier + "': trace ('" + currentResizer[0].dataset.kluezResier + "');");
+						console.log("src/MainResize.hx:155:","case '" + currentResizer[0].dataset.kluezResier + "': trace ('" + currentResizer[0].dataset.kluezResier + "');");
 					}
 				};
 			})(currentResizer)];
-			var stopResize = [(function(resize) {
+			var onMouseupHandler = [(function(onMousemoveHandler) {
 				return function() {
-					window.removeEventListener("mousemove",resize[0]);
+					window.removeEventListener("mousemove",onMousemoveHandler[0]);
 				};
-			})(resize)];
-			currentResizer[0].addEventListener("mousedown",(function(stopResize,resize) {
+			})(onMousemoveHandler)];
+			currentResizer[0].onmousedown = (function(onMouseupHandler,onMousemoveHandler) {
 				return function(e) {
 					e.preventDefault();
 					original_width = parseFloat(StringTools.replace(window.getComputedStyle(element,null).getPropertyValue("width"),"px",""));
@@ -132,10 +150,10 @@ MainResize.prototype = {
 					original_y = element.getBoundingClientRect().top;
 					original_mouse_x = e.pageX;
 					original_mouse_y = e.pageY;
-					window.addEventListener("mousemove",resize[0]);
-					window.addEventListener("mouseup",stopResize[0]);
+					window.addEventListener("mousemove",onMousemoveHandler[0]);
+					window.addEventListener("mouseup",onMouseupHandler[0]);
 				};
-			})(stopResize,resize));
+			})(onMouseupHandler,onMousemoveHandler);
 		}
 	}
 	,createItem: function(id,x,y,w,h) {
@@ -146,15 +164,15 @@ MainResize.prototype = {
 			w = 150;
 		}
 		if(y == null) {
-			y = 150;
+			y = 100;
 		}
 		if(x == null) {
-			x = 150;
+			x = 100;
 		}
 		if(id == null) {
 			id = "foo";
 		}
-		var resizerTemplate = "\n<div class=\"resizable\" id=\"" + id + "\" style=\"width: " + w + "px; height: " + h + "px; left: " + x + "px; top: " + y + "px;\">\n\t<div class=\"dragger\"></div>\n\t<div class=\"resizers\">\n\t\t<!-- round resizers -->\n\t\t<div class=\"resizer top-left\" data-kluez-resizer=\"top-left\"></div>\n\t\t<div class=\"resizer top-right\" data-kluez-resizer=\"top-right\"></div>\n\t\t<div class=\"resizer bottom-left\" data-kluez-resizer=\"bottom-left\"></div>\n\t\t<div class=\"resizer bottom-right\" data-kluez-resizer=\"bottom-right\"></div>\n\t\t<!-- square resizers -->\n\t\t<div class=\"resizer resizer-sq left\" data-kluez-resizer=\"left\"></div>\n\t\t<div class=\"resizer resizer-sq right\" data-kluez-resizer=\"right\"></div>\n\t\t<div class=\"resizer resizer-sq top\" data-kluez-resizer=\"top\"></div>\n\t\t<div class=\"resizer resizer-sq bottom\" data-kluez-resizer=\"bottom\"></div>\n\t</div>\n</div>\n";
+		var resizerTemplate = "\n<div class=\"resizable\" id=\"" + id + "\" style=\"width: " + w + "px; height: " + h + "px; left: " + x + "px; top: " + y + "px;\">\n\t<div class=\"blocker\"></div>\n\t<div class=\"resizers\">\n\t\t<!-- round resizers -->\n\t\t<div class=\"resizer top-left\" data-kluez-resizer=\"top-left\"></div>\n\t\t<div class=\"resizer top-right\" data-kluez-resizer=\"top-right\"></div>\n\t\t<div class=\"resizer bottom-left\" data-kluez-resizer=\"bottom-left\"></div>\n\t\t<div class=\"resizer bottom-right\" data-kluez-resizer=\"bottom-right\"></div>\n\t\t<!-- square resizers -->\n\t\t<div class=\"resizer resizer-sq left\" data-kluez-resizer=\"left\"></div>\n\t\t<div class=\"resizer resizer-sq right\" data-kluez-resizer=\"right\"></div>\n\t\t<div class=\"resizer resizer-sq top\" data-kluez-resizer=\"top\"></div>\n\t\t<div class=\"resizer resizer-sq bottom\" data-kluez-resizer=\"bottom\"></div>\n\t</div>\n</div>\n";
 		var frag = window.document.createRange().createContextualFragment(resizerTemplate);
 		this.container.appendChild(frag);
 	}

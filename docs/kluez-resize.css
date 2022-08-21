@@ -10,7 +10,7 @@ html {
 }
 
 .resizable {
-  background: white;
+  background-color: white;
   width: 100px;
   height: 100px;
   position: absolute;
@@ -18,10 +18,10 @@ html {
   left: 100px;
 }
 
-.resizable .dragger {
+.resizable .blocker {
   width: 100%;
   height: 100%;
-  background-color: yellow;
+  /* background-color: yellow; */
   position: absolute;
   top: 0;
   left: 0;
@@ -87,4 +87,17 @@ html {
   right: calc(50% + (var(--resizerSize) * -0.5));
   top: calc(var(--resizerSize) * -0.5);
   cursor: ns-resize;
+}
+
+/*
+ */
+
+#kluez-resize-element-blue {
+  background-color: blue;
+}
+#kluez-resize-element-red {
+  background-color: red;
+}
+#kluez-resize-element-green {
+  background-color: green;
 }

@@ -16,21 +16,28 @@ class MainResize {
 	var arr = ['blue', 'red', 'green'];
 
 	public function new() {
-		trace("Hello 'Kluez-resizer'");
-
+		// trace("Hello 'Kluez-resizer'");
 		document.addEventListener("DOMContentLoaded", function(event) {
 			console.log('${App.NAME} Dom ready :: build: ${App.getBuildDate()} ');
 
 			container = cast document.getElementById('kluez-resizer-container');
 
-			createItem();
+			createItem('kluez-resize-element');
 			makeResizableDiv('.resizable');
+
+			for (i in 0...arr.length) {
+				// createItem('kluez-resize-element-${arr[i]}', 300 * i + 50, 300 * i + 300, 200, 200);
+			}
 		});
 	}
 
 	function makeResizableDiv(div) {
 		var element:DivElement = cast document.querySelector(div);
 		var resizers = document.querySelectorAll(div + ' .resizer');
+
+		var blocker:DivElement = cast document.querySelector('.blocker');
+
+		// values
 		var minimum_size = 20;
 		var original_width = 0.;
 		var original_height = 0.;
@@ -39,19 +46,41 @@ class MainResize {
 		var original_mouse_x = 0.;
 		var original_mouse_y = 0.;
 
-		element.onmousedown = () -> {
-			trace('onmousedown');
-			element.onmouseup = () -> {
-				trace('onmouseup');
+		//
+		blocker.onmousedown = (e) -> {
+			e.preventDefault();
+			trace('blocker onmousedown');
+			trace(e);
+
+			var parent = blocker.parentElement;
+			window.onmousemove = (e:MouseEvent) -> {
+				trace('blocker onmousemove');
+				trace(e);
+				parent.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+				parent.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+				// parent.style.left = original_x + (e.pageX - e.layerX) + 'px';
+				// parent.style.top = original_y + (e.pageY - e.layerY) + 'px';
+				// parent.style.left = (original_x + (e.pageX)) - e.clientX + 'px';
+				// parent.style.top = (original_y + (e.pageY)) - e.clientY + 'px';
 			}
+			window.onmouseup = (e) -> {
+				trace('blocker onmouseup');
+				window.onmousemove = null;
+				window.onmouseup = null;
+			}
+			return null;
 		}
 
 		for (i in 0...resizers.length) {
 			// var _resizers = resizers[i];
 			var currentResizer:DivElement = cast resizers[i];
+			// trace(currentResizer);
 
-			function resize(e) {
+			function onMousemoveHandler(e) {
 				var value = currentResizer.dataset.kluezResizer;
+
+				trace(value);
+
 				switch (value) {
 					case 'bottom-right':
 						var width = original_width + (e.pageX - original_mouse_x);
@@ -127,11 +156,11 @@ class MainResize {
 				}
 			}
 
-			function stopResize() {
-				window.removeEventListener('mousemove', resize);
+			function onMouseupHandler() {
+				window.removeEventListener('mousemove', onMousemoveHandler);
 			}
 
-			currentResizer.addEventListener('mousedown', function(e) {
+			currentResizer.onmousedown = function(e) {
 				e.preventDefault();
 				original_width = Std.parseFloat(window.getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
 				original_height = Std.parseFloat(window.getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
@@ -139,16 +168,18 @@ class MainResize {
 				original_y = element.getBoundingClientRect().top;
 				original_mouse_x = e.pageX;
 				original_mouse_y = e.pageY;
-				window.addEventListener('mousemove', resize);
-				window.addEventListener('mouseup', stopResize);
-			});
+				window.addEventListener('mousemove', onMousemoveHandler);
+				window.addEventListener('mouseup', onMouseupHandler);
+				// window.onmousemove = onMousemoveHandler;
+				// window.onmouseup = onMouseupHandler;
+			};
 		}
 	}
 
-	function createItem(id = 'foo', x = 150, y = 150, w = 150, h = 150) {
+	function createItem(id = 'foo', x = 100, y = 100, w = 150, h = 150) {
 		var resizerTemplate = '
 <div class="resizable" id="${id}" style="width: ${w}px; height: ${h}px; left: ${x}px; top: ${y}px;">
-	<div class="dragger"></div>
+	<div class="blocker"></div>
 	<div class="resizers">
 		<!-- round resizers -->
 		<div class="resizer top-left" data-kluez-resizer="top-left"></div>
