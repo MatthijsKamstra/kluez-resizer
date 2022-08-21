@@ -3,7 +3,7 @@ var MainResize = function() {
 	this.arr = ["blue","red","green"];
 	var _gthis = this;
 	window.document.addEventListener("DOMContentLoaded",function(event) {
-		$global.console.log("" + model_constants_App.NAME + " Dom ready :: build: " + "2022-08-21 11:21:04" + " ");
+		$global.console.log("" + model_constants_App.NAME + " Dom ready :: build: " + "2022-08-21 11:28:08" + " ");
 		_gthis.container = window.document.getElementById("kluez-resizer-container");
 		_gthis.createItem("kluez-resize-element");
 		_gthis.makeResizableDiv(".resizable");
@@ -33,15 +33,19 @@ MainResize.prototype = {
 			e.preventDefault();
 			console.log("src/MainResize.hx:52:","blocker onmousedown");
 			console.log("src/MainResize.hx:53:",e);
+			original_x = element.getBoundingClientRect().left;
+			original_y = element.getBoundingClientRect().top;
+			original_mouse_x = e.pageX;
+			original_mouse_y = e.pageY;
 			var parent = blocker.parentElement;
 			window.onmousemove = function(e) {
-				console.log("src/MainResize.hx:57:","blocker onmousemove");
-				console.log("src/MainResize.hx:58:",e);
+				console.log("src/MainResize.hx:61:","blocker onmousemove");
+				console.log("src/MainResize.hx:62:",e);
 				parent.style.left = original_x + (e.pageX - original_mouse_x) + "px";
 				return parent.style.top = original_y + (e.pageY - original_mouse_y) + "px";
 			};
 			window.onmouseup = function(e) {
-				console.log("src/MainResize.hx:67:","blocker onmouseup");
+				console.log("src/MainResize.hx:71:","blocker onmouseup");
 				window.onmousemove = null;
 				return window.onmouseup = null;
 			};
@@ -55,7 +59,7 @@ MainResize.prototype = {
 			var onMousemoveHandler = [(function(currentResizer) {
 				return function(e) {
 					var value = currentResizer[0].dataset.kluezResizer;
-					console.log("src/MainResize.hx:82:",value);
+					console.log("src/MainResize.hx:86:",value);
 					switch(value) {
 					case "bottom":
 						var width = original_width + (e.pageX - original_mouse_x);
@@ -132,7 +136,7 @@ MainResize.prototype = {
 						}
 						break;
 					default:
-						console.log("src/MainResize.hx:155:","case '" + currentResizer[0].dataset.kluezResier + "': trace ('" + currentResizer[0].dataset.kluezResier + "');");
+						console.log("src/MainResize.hx:159:","case '" + currentResizer[0].dataset.kluezResier + "': trace ('" + currentResizer[0].dataset.kluezResier + "');");
 					}
 				};
 			})(currentResizer)];

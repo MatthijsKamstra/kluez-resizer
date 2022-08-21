@@ -51,6 +51,10 @@ class MainResize {
 			e.preventDefault();
 			trace('blocker onmousedown');
 			trace(e);
+			original_x = element.getBoundingClientRect().left;
+			original_y = element.getBoundingClientRect().top;
+			original_mouse_x = e.pageX;
+			original_mouse_y = e.pageY;
 
 			var parent = blocker.parentElement;
 			window.onmousemove = (e:MouseEvent) -> {
