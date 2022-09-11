@@ -26,7 +26,7 @@ class MainResize {
 			makeResizableDiv('.resizable');
 
 			for (i in 0...arr.length) {
-				// createItem('kluez-resize-element-${arr[i]}', 300 * i + 50, 300 * i + 300, 200, 200);
+				createItem('kluez-resize-element-${arr[i]}', 300 * i + 50, 300 * i + 300, 200, 200);
 			}
 		});
 	}

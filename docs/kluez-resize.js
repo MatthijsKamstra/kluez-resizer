@@ -3,7 +3,7 @@ var MainResize = function() {
 	this.arr = ["blue","red","green"];
 	var _gthis = this;
 	window.document.addEventListener("DOMContentLoaded",function(event) {
-		$global.console.log("" + model_constants_App.NAME + " Dom ready :: build: " + "2022-08-21 11:28:08" + " ");
+		$global.console.log("" + model_constants_App.NAME + " Dom ready :: build: " + "2022-08-26 10:59:43" + " ");
 		_gthis.container = window.document.getElementById("kluez-resizer-container");
 		_gthis.createItem("kluez-resize-element");
 		_gthis.makeResizableDiv(".resizable");
@@ -11,6 +11,7 @@ var MainResize = function() {
 		var _g1 = _gthis.arr.length;
 		while(_g < _g1) {
 			var i = _g++;
+			_gthis.createItem("kluez-resize-element-" + _gthis.arr[i],300 * i + 50,300 * i + 300,200,200);
 		}
 	});
 };
